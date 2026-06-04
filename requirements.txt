@@ -1,0 +1,15 @@
+pymongo[srv]
+python-dotenv
+fastapi
+uvicorn[standard]
+pydantic[email]
+websockets>=10.0
+wsproto>=1.0
+python-multipart
+aiofiles
+motor
+python-dotenv
+pytest
+httpx
+PyJWT
+tzdata
