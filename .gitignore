@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+.venv/
+venv/
+ENV/
+.env
+.env.*
+env.bak/
+venv.bak/
+.env/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# Pytest
+.pytest_cache/
+
+# MyPy
+.mypy_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+
+# Vite
+frontend/dist/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Build
+build/
+dist/
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+
+
+# mongo test file
+.ConnectMongoTest.py
+
+# context file
+.AUTH_SPEC.md
+backend/server/app/auth/AUTH_SPEC.md
