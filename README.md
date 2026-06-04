@@ -442,7 +442,13 @@ Potential future improvements include:
 SE3350 Group Project — Team 07
 
 This project was developed collaboratively over approximately three months.
+Other Members:
+https://github.com/Sihong-Liu
+https://github.com/anshu-420
+https://github.com/Kevin041005
+https://github.com/notarychant
 
+Thank you!
 ---
 
 ## License
