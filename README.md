@@ -1,28 +1,216 @@
-# SE3350 Group Project — Team 07
+# Live Bidding Web App
 
-A complete full-stack web application built over the course of three months for SE3350.
+A full-stack live auction and bidding platform built for SE3350 by Team 07.
 
-This project includes a FastAPI backend and a React + TypeScript frontend. The application was developed as a working web app, not just a scaffold, with both client-side and server-side functionality implemented and connected through API calls.
+This repository contains a working web application with a FastAPI backend and a React + TypeScript frontend. The app supports role-based user flows, live auction rooms, real-time bidding updates, Kogbucks balance tracking, item management, wishlists, and administrative auction controls.
 
-The repository is organized as a monorepo, with the backend and frontend kept in separate folders so that each part of the system can be developed, tested, and run independently.
+The project was developed over approximately three months as a complete course project, not as a scaffold. It demonstrates a practical full-stack architecture where the frontend, backend API, MongoDB persistence layer, and WebSocket event system work together to support a live bidding experience.
 
 ---
 
-## Project Overview
+## Purpose
 
-This application was created as a team project for SE3350. Over a three-month development period, the team designed, implemented, and integrated a working full-stack system.
+The purpose of the application is to provide an internal auction system where users can participate in live auctions using a virtual currency called Kogbucks.
 
-The project includes:
+Regular users can view their dashboard, track their Kogbucks balance, browse available auctions, join invited bidding rooms, place bids, use chat, maintain a wishlist, and review items they have won.
 
-- A backend API built with FastAPI
-- A frontend built with React, TypeScript, and Vite
-- Environment configuration for both backend and frontend
-- API communication between the frontend and backend
-- A working local development setup
-- Organized backend and frontend project structure
-- Functional web app features developed throughout the term
+Administrators can manage the auction system by creating and editing auctions, assigning items to auctions, inviting users, managing users, viewing past auctions, managing Kogbucks, and running administrative bidding-room views.
 
-The application was designed to demonstrate practical software engineering skills, including requirements analysis, frontend development, backend development, API design, team collaboration, iterative implementation, and documentation.
+---
+
+## Main Features
+
+### Authentication and Protected Routes
+
+The app includes an authentication flow and separates access between regular users and administrators.
+
+Protected routes prevent unauthenticated users from accessing the main application. Additional route guards separate regular user pages from admin-only pages.
+
+User-facing routes include:
+
+- Dashboard
+- Settings
+- Wishlist
+- Auctions
+- Bidding room
+
+Admin-facing routes include:
+
+- Admin overview
+- Auction management
+- Past auctions
+- Item management
+- User management
+- Kogbucks management
+- Admin bidding room
+- Admin wishlist view
+
+---
+
+### User Dashboard
+
+The dashboard gives users a summary of their account and auction activity.
+
+It displays:
+
+- User profile information
+- User role
+- Email and display name
+- Available Kogbucks balance
+- Held Kogbucks balance
+- Account balance status
+- Items won by the user
+- Winning bid amounts
+- Auction names and item statuses
+
+This gives each user a clear overview of their current standing in the auction system.
+
+---
+
+### Kogbucks Balance System
+
+The application uses Kogbucks as the virtual auction currency.
+
+Users have balances that can be:
+
+- Available for bidding
+- Temporarily held during active bidding
+- Updated after auction results are finalized
+
+The backend includes support for default development Kogbucks values and stores user balances in the database.
+
+---
+
+### Auction Browsing
+
+Users can view available auctions through the Auctions page.
+
+The auction system supports multiple auction states, including upcoming, live, and ended auctions. Users can browse auctions, inspect auction details, and access bidding rooms when they are allowed to participate.
+
+---
+
+### Live Bidding Rooms
+
+The bidding room is one of the core parts of the application.
+
+Inside a bidding room, users can:
+
+- View auction details
+- See auction items
+- Search/filter items in the room
+- See the active or selected item
+- Join an auction they were invited to
+- Place bids
+- View bid history
+- See the latest bidder
+- Track item statuses such as live, temporarily owned, pre-sold, and sold
+- Receive live room state updates
+- See winner ticker messages
+- Use the in-room chat system
+
+The frontend connects to the backend's real-time auction room system so auction state, bids, chat messages, and event notifications can update during the auction experience.
+
+---
+
+### Real-Time Updates with WebSockets
+
+The backend includes WebSocket support for auction-room events.
+
+The application uses this real-time layer to broadcast auction updates, including state changes, bid updates, auction-ending events, and chat-related activity.
+
+The backend also includes an outbox dispatcher pattern for WebSocket events, helping coordinate database-backed events with live client updates.
+
+---
+
+### Auction Auto-End and Inactivity Handling
+
+The backend includes background tasks for auction lifecycle management.
+
+These tasks can:
+
+- Detect expired running auctions
+- Automatically close auctions when their end time is reached
+- Distribute results after an auction ends
+- Broadcast auction-ended and auction-state-updated events
+- Process inactivity notifications for auctions
+
+This helps keep auction state consistent without requiring manual intervention for every auction lifecycle event.
+
+---
+
+### Wishlist
+
+Users can maintain a wishlist of auction items they are interested in.
+
+The wishlist feature gives users a way to track desirable items separately from the live bidding flow.
+
+Administrators also have access to an admin wishlist view, which can help with understanding user interest and demand.
+
+---
+
+### Admin Auction Management
+
+Administrators can manage auctions from the admin interface.
+
+Admin auction features include:
+
+- Listing auctions
+- Filtering auctions by status
+- Searching auctions by title or category
+- Creating new auctions
+- Editing existing auctions
+- Setting auction start and end times
+- Assigning items to auctions
+- Viewing active and upcoming auctions
+- Viewing past auctions
+- Inviting eligible users to participate in auctions
+
+This gives administrators control over the auction schedule and participant access.
+
+---
+
+### Admin Item Management
+
+Administrators can create and update auction items.
+
+Item management includes:
+
+- Item name
+- Category
+- Description
+- Image URL
+- Item status
+- Sold and pre-sold handling
+- Gift card and physical item categories
+
+The frontend also normalizes image URLs to make item image entry easier during administration.
+
+---
+
+### Admin User and Kogbucks Management
+
+The admin area includes tools for managing users and Kogbucks.
+
+This supports the administrative side of the auction economy, including reviewing users and managing the virtual currency used for bidding.
+
+---
+
+### MongoDB Persistence
+
+The backend is designed to use MongoDB for persistent storage.
+
+Configured collections include:
+
+- Users
+- Items
+- Auctions
+- Bids
+- Auction messages
+- Auction chat messages
+- Wishlist entries
+- WebSocket outbox events
+
+MongoDB configuration is controlled through environment variables.
 
 ---
 
@@ -33,102 +221,46 @@ The application was designed to demonstrate practical software engineering skill
 - Python 3.9+
 - FastAPI
 - Uvicorn
-- REST-style API endpoints
-- Python virtual environment
-- Environment variable configuration
+- Motor async MongoDB driver
+- PyMongo
+- Pydantic
+- PyJWT
+- WebSockets
+- python-dotenv
+- pytest
+- httpx
 
 ### Frontend
 
-- React
+- React 18
 - TypeScript
 - Vite
-- Node.js 18+
+- React Router
 - npm
-- Component-based UI development
-- Environment variable configuration through Vite
 
----
+### Database and Runtime
 
-## Main Features
-
-The web application includes a complete frontend and backend that work together to provide a functional user experience.
-
-### Full-Stack Architecture
-
-The project separates the backend and frontend into two main application layers.
-
-The backend is responsible for exposing API endpoints and handling server-side logic. The frontend is responsible for displaying the user interface, sending requests to the backend, and presenting data to the user.
-
-This separation makes the project easier to maintain, test, and expand.
-
-### React + TypeScript Frontend
-
-The frontend was built using React and TypeScript. This allowed the team to build the interface using reusable components while also benefiting from type safety during development.
-
-The frontend is powered by Vite, which provides a fast development server and a modern build process.
-
-### FastAPI Backend
-
-The backend was built with FastAPI, a Python web framework designed for building APIs quickly and clearly.
-
-The backend exposes endpoints that the frontend can call through HTTP requests. FastAPI also provides interactive API documentation, making it easier to test and understand the available backend routes during development.
-
-### API Integration
-
-The frontend communicates with the backend using a configurable API base URL.
-
-This allows the project to run locally during development while still supporting different backend URLs through environment variables.
-
-### Environment-Based Configuration
-
-Both the backend and frontend include example environment files.
-
-The frontend supports a configurable backend URL through:
-
-```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
-```
-
-This makes it easier to switch between local development, testing, and future deployment environments.
-
-### Local Development Workflow
-
-The project can be run locally by starting the backend and frontend in separate terminals.
-
-This mirrors a real full-stack development workflow where the API server and client application run independently but communicate with each other.
-
-### Team-Based Development
-
-The project was built collaboratively over three months. The structure of the repository supports team development by clearly separating frontend and backend responsibilities.
-
-This made it possible for team members to work on different areas of the application while still integrating everything into one final working system.
+- MongoDB
+- Environment-variable based configuration
+- Local development support
+- WebSocket-based live updates
 
 ---
 
 ## Prerequisites
 
-Before running the project, make sure the following tools are installed:
+Before running the project, make sure you have the following installed:
 
 - Python 3.9+
 - Node.js 18+
 - npm
-
-The backend Python version should match the project configuration in:
-
-```txt
-backend/pyproject.toml
-backend/requirements.txt
-```
-
-Node.js 18+ is required for the Vite frontend.
+- MongoDB access, either local or hosted
 
 ---
 
 ## Backend Setup
 
-The backend is located in the `backend` folder.
-
-From the root of the repository, run:
+From the repository root:
 
 ```bash
 cd backend
@@ -155,31 +287,31 @@ On Windows Command Prompt:
 .venv\Scripts\activate
 ```
 
-Install the backend dependencies:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Move into the server folder:
+Move into the backend server folder:
 
 ```bash
 cd server
 ```
 
-Start the FastAPI development server:
+Run the FastAPI development server:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The backend will run at:
+Backend default URL:
 
 ```txt
 http://127.0.0.1:8000
 ```
 
-FastAPI documentation is available at:
+FastAPI documentation:
 
 ```txt
 http://127.0.0.1:8000/docs
@@ -189,9 +321,7 @@ http://127.0.0.1:8000/docs
 
 ## Frontend Setup
 
-The frontend is located in the `frontend` folder.
-
-From the root of the repository, run:
+From the repository root:
 
 ```bash
 cd frontend
@@ -199,7 +329,7 @@ npm install
 npm run dev
 ```
 
-The frontend will run at:
+Frontend default URL:
 
 ```txt
 http://127.0.0.1:5173
@@ -207,9 +337,9 @@ http://127.0.0.1:5173
 
 ---
 
-## Running the Full Application
+## Running the Full Application Locally
 
-To run the complete application locally, use two terminal windows.
+Run the backend and frontend in separate terminal windows.
 
 ### Terminal 1 — Backend
 
@@ -222,13 +352,7 @@ cd server
 uvicorn app.main:app --reload
 ```
 
-On Windows, replace the virtual environment activation command with the appropriate Windows command shown in the backend setup section.
-
-Backend URL:
-
-```txt
-http://127.0.0.1:8000
-```
+On Windows, use the appropriate virtual environment activation command shown above.
 
 ### Terminal 2 — Frontend
 
@@ -238,127 +362,78 @@ npm install
 npm run dev
 ```
 
-Frontend URL:
+Then open the frontend in your browser:
 
 ```txt
 http://127.0.0.1:5173
 ```
-
-Once both servers are running, open the frontend URL in a browser.
 
 ---
 
 ## Environment Variables
 
-The project includes sample environment files for both the backend and frontend.
+The project uses environment variables for backend and frontend configuration.
 
-Backend sample:
+### Frontend
 
-```txt
-backend/.env.example
-```
-
-Frontend sample:
-
-```txt
-frontend/.env.example
-```
-
-To customize the backend API URL used by the frontend, create or update the frontend `.env` file and set:
+To customize the backend API URL used by the frontend, set:
 
 ```env
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-Because this project uses Vite, frontend environment variables must begin with:
+Because this project uses Vite, frontend environment variables must begin with `VITE_`.
 
-```txt
-VITE_
+### Backend
+
+Important backend environment variables include:
+
+```env
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB_NAME=auction_system
+CORS_ALLOW_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+DEV_ADMIN_EMAILS=admin@example.com
+DEV_DEFAULT_KOGBUCKS=1000
 ```
+
+The backend also supports configurable collection names for users, items, auctions, bids, auction messages, chat messages, wishlist entries, and WebSocket outbox events.
 
 ---
 
-## Backend Notes
+## Development Notes
 
-The backend uses FastAPI and is launched with Uvicorn.
-
-The main backend entry point is:
-
-```txt
-backend/server/app/main.py
-```
-
-The backend is responsible for serving the API used by the frontend.
-
-During development, the backend can be tested directly through the browser or through the FastAPI documentation page at:
-
-```txt
-http://127.0.0.1:8000/docs
-```
-
----
-
-## Frontend Notes
-
-The frontend uses React with TypeScript and Vite.
-
-The frontend development server runs at:
-
-```txt
-http://127.0.0.1:5173
-```
-
-The frontend is responsible for:
-
-- Rendering the user interface
-- Handling user interactions
-- Communicating with the backend API
-- Displaying backend data to the user
-- Managing client-side application behavior
-
----
-
-## Development Process
-
-This project was completed over approximately three months.
-
-The team worked through the major stages of full-stack application development, including:
-
-- Planning the project structure
-- Setting up the backend and frontend environments
-- Building backend API functionality
-- Building frontend UI features
-- Connecting the frontend to the backend
-- Testing the application locally
-- Refining the app based on project requirements
-- Preparing the repository for final submission
-
-The final result is a working full-stack web application rather than a starter scaffold.
+- The frontend and backend are intentionally separated into their own folders.
+- The frontend uses React Router for page navigation and route protection.
+- The backend exposes API routers for authentication, users, auctions, bids, items, and wishlist functionality.
+- MongoDB is required for the full backend feature set.
+- WebSockets are used for real-time auction-room behavior.
+- Background backend tasks manage auction expiration and inactivity-related processing.
+- The app includes both regular-user and administrator workflows.
 
 ---
 
 ## Current Status
 
-The application is complete for the SE3350 project submission.
+The application is complete for the SE3350 Team 07 project submission.
 
-The project includes a working backend and frontend and can be run locally by following the setup instructions in this README.
+It is a working full-stack live bidding web app with implemented frontend pages, backend APIs, database-backed auction state, real-time bidding-room functionality, and administrative tools.
 
 ---
 
 ## Possible Future Improvements
 
-Although the project is complete for the course, future improvements could include:
+Potential future improvements include:
 
-- Adding stronger authentication and authorization
-- Improving error handling across the frontend and backend
-- Adding automated tests
-- Improving deployment configuration
-- Adding CI/CD workflows
-- Expanding the database layer
-- Improving UI polish and accessibility
-- Adding more detailed API documentation
-- Improving form validation
-- Adding more robust logging
+- Production deployment configuration
+- Stronger authentication and authorization hardening
+- More detailed automated test coverage
+- More robust error handling and logging
+- Improved accessibility testing
+- CI/CD pipeline setup
+- Expanded reporting for auction results
+- More advanced admin analytics
+- Email delivery integration for production OTP flows
+- More granular audit logs for bidding and admin actions
 
 ---
 
@@ -366,7 +441,7 @@ Although the project is complete for the course, future improvements could inclu
 
 SE3350 Group Project — Team 07
 
-This project was developed collaboratively as a team over a three-month period.
+This project was developed collaboratively over approximately three months.
 
 ---
 
